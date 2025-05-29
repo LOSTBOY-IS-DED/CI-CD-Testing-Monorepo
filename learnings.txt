@@ -1,0 +1,36 @@
+Docker files becomes bit tricky is the application needs to
+the database during the build phase 
+
+study about build args and build cache ???
+
+the problem is next app is that when it builds it creates 
+a static page which wont talk to the db if any data changed 
+
+There are two ways to solve this 
+
+1. export const revalidate = 60 // revalidate every 60 seconds
+or
+2. export const dynamic = 'force-dynamic'
+
+the first way is best of both worlds 
+
+________________________________________________________________________________________________________
+
+if the db is down 
+1. websockets builds  --> will run with issues
+2. backend builds
+3. but not the frontend
+
+
+build command will run the file take to the database get back with some data and create a HTML with it ..
+eventually this will run on docker production 
+when we are deploying to the production every day on every commit we need to 
+build the docker file and push it to the docker hun
+
+
+dumbest approach 
+1. add DATABASE_URL while building to the dockerfile every can see it and you are screwed 
+like this 
+RUN DATABASE_URL="<db:password>" bun run build
+
+or we can pass dynamic env variables

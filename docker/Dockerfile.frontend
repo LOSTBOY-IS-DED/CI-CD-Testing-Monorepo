@@ -1,0 +1,40 @@
+# fucking hard ... and weird let me try some weird logic here 
+
+# difficult for few reasons 
+# 1. In a next js application you cant run bun run index.ts 
+# 2. you need to build
+# 3. static site generation
+# 4 . hot reloading is a pain in ass 
+
+
+FROM oven/bun:1
+
+WORKDIR /usr/src/app
+ARG DATABASE_URL
+# layer optimization not done yet
+
+COPY ./packages ./packages
+COPY ./bun.lock ./bun.lock
+COPY ./package.json ./package.json
+COPY ./turbo.json ./turbo.json
+
+COPY ./apps/frontend ./apps/frontend
+
+# or 
+
+# COPY . .
+
+RUN bun install
+
+# RUN packages/db && npx prisma generate && cd ../..
+# or add this as a script in package.json
+
+RUN bun run generate:db
+# RUN bun run build
+# change this too 
+RUN DATABASE_URL=${DATABASE_URL} bun run build
+
+EXPOSE 8080
+
+CMD ["bun", "start:backend"]
+
